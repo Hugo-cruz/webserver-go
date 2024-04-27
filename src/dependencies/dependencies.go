@@ -1,15 +1,29 @@
 package dependencies
 
 import (
+	"fmt"
 	services "webserver/src/app/services"
 	common "webserver/src/commom"
+	config "webserver/src/config"
 )
 
-func buildDependencies() {
+type Dependencies struct {
+	db *services.DatabaseService
+}
+
+func BuildDependencies() (Dependencies, error) {
 	cnfPath := common.ConfigPath
-	config, err := LoadConfigFromFile(cnfPath)
+	config, err := config.LoadConfigFromFile(cnfPath)
 	if err != nil {
-		panic("error on config")
+		fmt.Println("error on config")
 	}
-	dbService := services.NewDatabaseService(config)
+	dbService, err := services.NewDatabaseService(config)
+
+	if err != nil {
+		return Dependencies{}, err
+	}
+
+	return Dependencies{
+		db: dbService,
+	}, nil
 }

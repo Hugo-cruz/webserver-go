@@ -1,15 +1,17 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"webserver/src/app/routes"
-	common "webserver/src/commom"
+	dep "webserver/src/dependencies"
 )
 
 func main() {
-
-	routes.Router()
+	fmt.Println("Starting")
+	dependencies, err := dep.BuildDependencies()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("dependencies ok")
+	routes.Router(dependencies)
 }
-
-

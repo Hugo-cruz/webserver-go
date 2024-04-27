@@ -12,7 +12,7 @@ type DatabaseService struct {
 	db *sql.DB
 }
 
-func NewDatabaseService(cnf config.Config) (*DatabaseService, error) {
+func NewDatabaseService(cnf *config.Config) (*DatabaseService, error) {
 	// Create a DSN (Data Source Name) string
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", cnf.Username, cnf.Password, cnf.Host, cnf.DBName)
 

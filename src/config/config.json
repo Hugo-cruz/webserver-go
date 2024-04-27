@@ -1,6 +1,6 @@
 {
     "username": "user-test-api",
     "password": "mypassword",
-    "host": "172.17.0.2",
+    "host": "localhost:3306",
     "dbname": "db-test-api"
   }
