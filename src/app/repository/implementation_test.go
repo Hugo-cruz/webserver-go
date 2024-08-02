@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
+	"log"
 	"testing"
 	"webserver/src/app/domain"
 )
@@ -25,6 +26,28 @@ func NewMockDatabase() *gorm.DB {
 	if db == nil {
 		return nil
 	}
+	err = db.Exec(`CREATE TABLE IF NOT EXISTS Devices (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(255) NOT NULL,
+        brand VARCHAR(255) NOT NULL,
+        creation_time DATETIME NOT NULL
+    )`).Error
+	if err != nil {
+		log.Fatalf("Failed to create table: %v", err)
+		return nil
+	}
+
+	// Insert sample data into the Devices table
+	err = db.Exec(`INSERT INTO Devices (name, brand, creation_time)
+    VALUES
+        ('Device1', 'BrandA', '2024-01-01 10:00:00'),
+        ('Device2', 'BrandB', '2024-02-01 11:00:00'),
+        ('Device3', 'BrandC', '2024-03-01 12:00:00')`).Error
+	if err != nil {
+		log.Fatalf("Failed to insert sample data: %v", err)
+		return nil
+	}
+
 	return db
 }
 
