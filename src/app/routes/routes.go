@@ -31,8 +31,6 @@ func Router(dep dep.Dependencies) {
 	deviceGroup.DELETE("/:id", deviceHandler.DeleteDevice)
 	deviceGroup.PUT("/:id", deviceHandler.UpdateDevice)
 
-	router.GET("/search", handler.HomeHandler)
-
 	err := router.Run()
 	if err != nil {
 		panic(err)

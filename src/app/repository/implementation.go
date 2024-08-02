@@ -31,6 +31,14 @@ func NewDatabaseRepository(db *gorm.DB) *DatabaseRepository {
 	}
 }
 
+func (d DatabaseRepository) Connect() (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open("urls.db"), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
 func (d DatabaseRepository) Initialize() error {
 	sqlFile, err := filepath.Abs("sample.sql")
 	fmt.Println(sqlFile)
@@ -46,7 +54,7 @@ func (d DatabaseRepository) Initialize() error {
 	commands := string(fileContent)
 	valid, err := isSQLValid(commands)
 	if err != nil {
-		log.Println("%s SQL: %v", valid, err)
+		log.Printf("%t SQL: %v", valid, err)
 		return err
 	}
 	d.DB.Exec(commands)
@@ -102,8 +110,8 @@ func NewDatabase(db *gorm.DB) Repository {
 	return &DatabaseRepository{DB: db}
 }
 
-func NewDatabaseConnection() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("./data.db"), &gorm.Config{})
+func NewDatabaseConnection(filepath string) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(filepath), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

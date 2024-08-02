@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 	"webserver/src/app/domain"
-	"webserver/src/app/port"
+	"webserver/src/app/port/device"
 	"webserver/src/app/repository"
 )
 
@@ -53,21 +53,11 @@ func (d DeviceHandler) ListDevices(ctx context.Context) ([]domain.Device, error)
 }
 
 func (d DeviceHandler) UpdateDevice(ctx context.Context, id int, device domain.Device) error {
-	/*deviceInfo, err := d.dbRepository.FindById(id)
-	if err != nil {
-		return err
-	}
-	*/
 	err := d.dbRepository.Update(device)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func (d DeviceHandler) PartialUpdateDevice(ctx context.Context, id int, updates map[string]interface{}) error {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (d DeviceHandler) DeleteDevice(ctx context.Context, id int) error {
@@ -86,7 +76,7 @@ func (d DeviceHandler) SearchDevicesByBrand(ctx context.Context, brand string) (
 	return devices, nil
 }
 
-func NewUseCase(dbRepository *repository.DatabaseRepository) port.UseCase {
+func NewUseCase(dbRepository *repository.DatabaseRepository) device.UseCase {
 	return &DeviceHandler{
 		dbRepository: dbRepository,
 	}

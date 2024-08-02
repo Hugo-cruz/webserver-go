@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"strconv"
 	"webserver/src/app/domain"
-	"webserver/src/app/port"
+	"webserver/src/app/port/device"
 )
 
 type devicesHandler struct {
-	deviceUseCase port.UseCase
+	deviceUseCase device.UseCase
 }
 
-func NewDevicesHandler(deviceUseCase port.UseCase) *devicesHandler {
+func NewDevicesHandler(deviceUseCase device.UseCase) *devicesHandler {
 	return &devicesHandler{
 		deviceUseCase: deviceUseCase,
 	}

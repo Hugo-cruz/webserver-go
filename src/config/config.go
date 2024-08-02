@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 )
 
 type Config struct {
@@ -10,20 +10,18 @@ type Config struct {
 	Password string
 	Host     string
 	DBName   string
+	DBPath   string
 }
 
-func LoadConfigFromFile(filename string) (*Config, error) {
-	// Read JSON data from file
-	data, err := ioutil.ReadFile(filename)
+func LoadConfigFromFile(filename string) (Config, error) {
+	data, err := os.ReadFile(filename)
 	if err != nil {
-		return nil, err
+		return Config{}, err
 	}
-
-	// Unmarshal JSON data into DBConfig struct
 	var config Config
 	if err := json.Unmarshal(data, &config); err != nil {
-		return nil, err
+		return Config{}, err
 	}
 
-	return &config, nil
+	return config, nil
 }

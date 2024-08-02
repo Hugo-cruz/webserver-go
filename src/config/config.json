@@ -2,5 +2,6 @@
     "username": "user-test-api",
     "password": "mypassword",
     "host": "localhost:3306",
-    "dbname": "db-test-api"
+    "dbname": "db-test-api",
+  "dbpath": "./data.db"
   }

@@ -13,11 +13,12 @@ type Dependencies struct {
 
 func BuildDependencies() (Dependencies, error) {
 	cnfPath := common.ConfigPath
-	_, err := config.LoadConfigFromFile(cnfPath)
+	cnf, err := config.LoadConfigFromFile(cnfPath)
 	if err != nil {
 		fmt.Println("error on config")
 	}
-	db, err := services.NewDatabaseConnection()
+
+	db, err := services.NewDatabaseConnection(cnf.DBPath)
 	if err != nil {
 		return Dependencies{}, err
 	}
