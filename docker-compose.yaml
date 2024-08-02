@@ -1,19 +1,4 @@
-version: '3.8'
-
 services:
-  mariadb:
-    image: mariadb:latest
-    container_name: mariadb-server
-    environment:
-      MYSQL_ROOT_PASSWORD: mysecretpassword
-      MYSQL_DATABASE: db-test-api
-      MYSQL_USER: user-test-api
-      MYSQL_PASSWORD: mypassword
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb-data:/var/lib/mysql
-
   golang-server:
     build:
       context: .
@@ -21,8 +6,6 @@ services:
     container_name: golang-server
     ports:
       - "8080:8080"
-    depends_on:
-      - mariadb
+    environment:
+      DATABASE_URL: "sqlite3:/app/data.db"
 
-volumes:
-  mariadb-data:

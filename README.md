@@ -4,9 +4,8 @@
 
 ## Description
 
-Im creating a webserver almost from scratch to put inside a Orange Pi and make it accesible from the internet. 
+This is a basic CRUD API to explore the use of Docker, docker-compose and an Ornge Pi, to create a small webserver.
 
-Im not sure what ill put inside, but Ill keep updating it.
 
 ## Table of Contents
 

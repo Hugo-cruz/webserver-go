@@ -1,13 +1,13 @@
--- Create table
-CREATE TABLE IF NOT EXISTS Users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50),
-    email VARCHAR(50),
-    age INT
+-- Create the Devices table
+CREATE TABLE IF NOT EXISTS Devices (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    brand VARCHAR(255) NOT NULL,
+    creation_time DATETIME NOT NULL
 );
-
--- Insert sample data
-INSERT INTO Users (name, email, age) VALUES 
-('John Doe', 'john@example.com', 30),
-('Jane Smith', 'jane@example.com', 25),
-('Michael Johnson', 'michael@example.com', 35);
+-- Insert sample data into the Devices table
+INSERT INTO Devices (name, brand, creation_time)
+VALUES
+    ('Device1', 'BrandA', '2024-01-01 10:00:00'),
+    ('Device2', 'BrandB', '2024-02-01 11:00:00'),
+    ('Device3', 'BrandC', '2024-03-01 12:00:00');
