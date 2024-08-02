@@ -5,22 +5,17 @@
 package repository
 
 import (
-	"gorm.io/gorm"
 	reflect "reflect"
 	domain "webserver/src/app/domain"
 
 	gomock "github.com/golang/mock/gomock"
+	gorm "gorm.io/gorm"
 )
 
 // MockRepository is a mock of Repository interface.
 type MockRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockRepositoryMockRecorder
-}
-
-func (m *MockRepository) Connect() (*gorm.DB, error) {
-	//TODO implement me
-	panic("implement me")
 }
 
 // MockRepositoryMockRecorder is the mock recorder for MockRepository.
@@ -38,6 +33,21 @@ func NewMockRepository(ctrl *gomock.Controller) *MockRepository {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockRepository) EXPECT() *MockRepositoryMockRecorder {
 	return m.recorder
+}
+
+// Connect mocks base method.
+func (m *MockRepository) Connect() (*gorm.DB, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Connect")
+	ret0, _ := ret[0].(*gorm.DB)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Connect indicates an expected call of Connect.
+func (mr *MockRepositoryMockRecorder) Connect() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Connect", reflect.TypeOf((*MockRepository)(nil).Connect))
 }
 
 // Delete mocks base method.

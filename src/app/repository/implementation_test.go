@@ -56,7 +56,7 @@ func (suite *RepositoryTestSuite) SetupTest() {
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
 	mockDB := NewMockDatabase()
-	suite.repository = NewDatabaseRepository(mockDB)
+	suite.repository = NewSQLiteRepository(mockDB)
 }
 
 func TestRunSuite(t *testing.T) {
@@ -64,12 +64,12 @@ func TestRunSuite(t *testing.T) {
 }
 
 func (suite *RepositoryTestSuite) TestCreate() {
-	mockDevice := NewMockDevice()
+	mockDevice := domain.NewMockDevice()
 	err := suite.repository.Save(mockDevice)
 	suite.Nil(err)
 }
 func (suite *RepositoryTestSuite) TestFind() {
-	mockDevice := NewMockDevice()
+	mockDevice := domain.NewMockDevice()
 	err := suite.repository.Save(mockDevice)
 	suite.Nil(err)
 	device, err := suite.repository.FindById(1)
@@ -77,7 +77,7 @@ func (suite *RepositoryTestSuite) TestFind() {
 	suite.NotNil(device)
 }
 func (suite *RepositoryTestSuite) TestUpdate() {
-	mockDevice := NewMockDevice()
+	mockDevice := domain.NewMockDevice()
 	err := suite.repository.Save(mockDevice)
 	suite.Nil(err)
 	mockDevice.Name = "teste"
@@ -85,7 +85,7 @@ func (suite *RepositoryTestSuite) TestUpdate() {
 	suite.Nil(err)
 }
 func (suite *RepositoryTestSuite) TestDelete() {
-	mockDevice := NewMockDevice()
+	mockDevice := domain.NewMockDevice()
 	err := suite.repository.Save(mockDevice)
 	suite.Nil(err)
 	err = suite.repository.Delete(mockDevice.ID)
@@ -93,7 +93,7 @@ func (suite *RepositoryTestSuite) TestDelete() {
 }
 
 func (suite *RepositoryTestSuite) TestFindById() {
-	mockDevice := NewMockDevice()
+	mockDevice := domain.NewMockDevice()
 	err := suite.repository.Save(mockDevice)
 	suite.Nil(err)
 	device, err := suite.repository.FindById(1)
@@ -102,7 +102,7 @@ func (suite *RepositoryTestSuite) TestFindById() {
 }
 
 func (suite *RepositoryTestSuite) TestFindAll() {
-	mockDevice := NewMockDevice()
+	mockDevice := domain.NewMockDevice()
 	err := suite.repository.Save(mockDevice)
 	suite.Nil(err)
 	devices, err := suite.repository.FindAll()
@@ -118,13 +118,5 @@ func TestNewDatabaseConnection_Success(t *testing.T) {
 	}
 	if db == nil {
 		t.Fatal("expected a non-nil database connection")
-	}
-}
-
-func NewMockDevice() domain.Device {
-	return domain.Device{
-		ID:    1,
-		Name:  "Teste",
-		Brand: "Brand",
 	}
 }

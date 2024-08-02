@@ -8,7 +8,7 @@ import (
 )
 
 type Dependencies struct {
-	DB *services.DatabaseRepository
+	DB *services.SQLiteRepository
 }
 
 func BuildDependencies() (Dependencies, error) {
@@ -22,8 +22,8 @@ func BuildDependencies() (Dependencies, error) {
 	if err != nil {
 		return Dependencies{}, err
 	}
-	dataBaseRepository := services.NewDatabaseRepository(db)
+	SQLiteRepository := services.NewSQLiteRepository(db)
 	return Dependencies{
-		DB: dataBaseRepository,
+		DB: SQLiteRepository,
 	}, nil
 }

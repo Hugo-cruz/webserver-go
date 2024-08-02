@@ -107,20 +107,6 @@ func (mr *MockUseCaseMockRecorder) ListDevices(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDevices", reflect.TypeOf((*MockUseCase)(nil).ListDevices), ctx)
 }
 
-// PartialUpdateDevice mocks base method.
-func (m *MockUseCase) PartialUpdateDevice(ctx context.Context, id int, updates map[string]interface{}) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PartialUpdateDevice", ctx, id, updates)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// PartialUpdateDevice indicates an expected call of PartialUpdateDevice.
-func (mr *MockUseCaseMockRecorder) PartialUpdateDevice(ctx, id, updates interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PartialUpdateDevice", reflect.TypeOf((*MockUseCase)(nil).PartialUpdateDevice), ctx, id, updates)
-}
-
 // SearchDevicesByBrand mocks base method.
 func (m *MockUseCase) SearchDevicesByBrand(ctx context.Context, brand string) ([]domain.Device, error) {
 	m.ctrl.T.Helper()

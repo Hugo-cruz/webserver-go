@@ -15,3 +15,11 @@ type DeviceModel struct {
 	Brand        string    `gorm:"size:255;not null"`
 	CreationTime time.Time `gorm:"not null"`
 }
+
+func NewMockDevice() Device {
+	return Device{
+		ID:    1,
+		Name:  "Teste",
+		Brand: "Brand",
+	}
+}

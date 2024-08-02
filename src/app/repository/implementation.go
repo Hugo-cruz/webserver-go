@@ -12,11 +12,11 @@ import (
 	"webserver/src/app/domain"
 )
 
-type DatabaseRepository struct {
+type SQLiteRepository struct {
 	DB *gorm.DB
 }
 
-func (d DatabaseRepository) FindByBrand(brand string) ([]domain.Device, error) {
+func (d SQLiteRepository) FindByBrand(brand string) ([]domain.Device, error) {
 	var devices []domain.Device
 	result := d.DB.Where("brand = ?", brand).Find(&devices)
 	if result.RowsAffected == 0 {
@@ -25,13 +25,13 @@ func (d DatabaseRepository) FindByBrand(brand string) ([]domain.Device, error) {
 	return devices, nil
 }
 
-func NewDatabaseRepository(db *gorm.DB) *DatabaseRepository {
-	return &DatabaseRepository{
+func NewSQLiteRepository(db *gorm.DB) *SQLiteRepository {
+	return &SQLiteRepository{
 		DB: db,
 	}
 }
 
-func (d DatabaseRepository) Connect() (*gorm.DB, error) {
+func (d SQLiteRepository) Connect() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("urls.db"), &gorm.Config{})
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (d DatabaseRepository) Connect() (*gorm.DB, error) {
 	return db, nil
 }
 
-func (d DatabaseRepository) Initialize() error {
+func (d SQLiteRepository) Initialize() error {
 	sqlFile, err := filepath.Abs("sample.sql")
 	fmt.Println(sqlFile)
 	if err != nil {
@@ -62,7 +62,7 @@ func (d DatabaseRepository) Initialize() error {
 	return nil
 }
 
-func (d DatabaseRepository) Save(device domain.Device) error {
+func (d SQLiteRepository) Save(device domain.Device) error {
 	err := d.DB.Save(&device)
 	if err != nil {
 		log.Println(err)
@@ -70,7 +70,7 @@ func (d DatabaseRepository) Save(device domain.Device) error {
 	return nil
 }
 
-func (d DatabaseRepository) Update(device domain.Device) error {
+func (d SQLiteRepository) Update(device domain.Device) error {
 	result := d.DB.Model(&device).Where("id = ?", device.ID).Updates(device)
 	if result.RowsAffected == 0 {
 		return errors.New("device not updated")
@@ -78,7 +78,7 @@ func (d DatabaseRepository) Update(device domain.Device) error {
 	return nil
 }
 
-func (d DatabaseRepository) Delete(deviceId int) error {
+func (d SQLiteRepository) Delete(deviceId int) error {
 	var deviceModel domain.DeviceModel
 	result := d.DB.Find("id = ?", deviceId).Delete(&deviceModel)
 	if result == nil {
@@ -87,7 +87,7 @@ func (d DatabaseRepository) Delete(deviceId int) error {
 	return nil
 }
 
-func (d DatabaseRepository) FindById(deviceId int) (domain.Device, error) {
+func (d SQLiteRepository) FindById(deviceId int) (domain.Device, error) {
 	var device domain.Device
 	result := d.DB.Find(&device, deviceId)
 	if result != nil {
@@ -96,7 +96,7 @@ func (d DatabaseRepository) FindById(deviceId int) (domain.Device, error) {
 	return domain.Device{}, errors.New("device not found")
 }
 
-func (d DatabaseRepository) FindAll() ([]domain.Device, error) {
+func (d SQLiteRepository) FindAll() ([]domain.Device, error) {
 	var Device []domain.Device
 	result := d.DB.Find(&Device)
 	if result != nil {
@@ -107,7 +107,7 @@ func (d DatabaseRepository) FindAll() ([]domain.Device, error) {
 }
 
 func NewDatabase(db *gorm.DB) Repository {
-	return &DatabaseRepository{DB: db}
+	return &SQLiteRepository{DB: db}
 }
 
 func NewDatabaseConnection(filepath string) (*gorm.DB, error) {

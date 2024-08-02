@@ -9,10 +9,10 @@ import (
 )
 
 type DeviceHandler struct {
-	dbRepository *repository.DatabaseRepository
+	dbRepository repository.Repository
 }
 
-func NewDeviceHandler(dbRepository *repository.DatabaseRepository) *DeviceHandler {
+func NewDeviceHandler(dbRepository repository.SQLiteRepository) *DeviceHandler {
 	return &DeviceHandler{
 		dbRepository: dbRepository,
 	}
@@ -37,11 +37,11 @@ func (d DeviceHandler) AddDevice(ctx context.Context, device domain.Device) erro
 }
 
 func (d DeviceHandler) GetDeviceByID(ctx context.Context, ID int) (domain.Device, error) {
-	device, err := d.dbRepository.FindById(ID)
+	deviceFound, err := d.dbRepository.FindById(ID)
 	if err != nil {
 		return domain.Device{}, err
 	}
-	return device, nil
+	return deviceFound, nil
 }
 
 func (d DeviceHandler) ListDevices(ctx context.Context) ([]domain.Device, error) {
@@ -76,7 +76,7 @@ func (d DeviceHandler) SearchDevicesByBrand(ctx context.Context, brand string) (
 	return devices, nil
 }
 
-func NewUseCase(dbRepository *repository.DatabaseRepository) device.UseCase {
+func NewUseCase(dbRepository repository.Repository) device.UseCase {
 	return &DeviceHandler{
 		dbRepository: dbRepository,
 	}
