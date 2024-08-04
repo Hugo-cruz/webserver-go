@@ -15,7 +15,7 @@ func BuildDependencies() (Dependencies, error) {
 	cnfPath := common.ConfigPath
 	cnf, err := config.LoadConfigFromFile(cnfPath)
 	if err != nil {
-		fmt.Println("error on config")
+		fmt.Println("Error On Config")
 	}
 
 	db, err := services.NewDatabaseConnection(cnf.DBPath)

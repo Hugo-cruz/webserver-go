@@ -35,5 +35,4 @@ func Router(dep dep.Dependencies) {
 	if err != nil {
 		panic(err)
 	}
-
 }

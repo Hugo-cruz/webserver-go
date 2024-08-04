@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"webserver/src/app/domain"
+	common "webserver/src/commom"
 )
 
 type SQLiteRepository struct {
@@ -41,7 +42,6 @@ func (d SQLiteRepository) Connect() (*gorm.DB, error) {
 
 func (d SQLiteRepository) Initialize() error {
 	sqlFile, err := filepath.Abs("sample.sql")
-	fmt.Println(sqlFile)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -62,7 +62,7 @@ func (d SQLiteRepository) Initialize() error {
 	return nil
 }
 
-func (d SQLiteRepository) Save(device domain.Device) error {
+func (d SQLiteRepository) Save(device *domain.Device) error {
 	err := d.DB.Save(&device)
 	if err != nil {
 		log.Println(err)
@@ -70,7 +70,7 @@ func (d SQLiteRepository) Save(device domain.Device) error {
 	return nil
 }
 
-func (d SQLiteRepository) Update(device domain.Device) error {
+func (d SQLiteRepository) Update(device *domain.Device) error {
 	result := d.DB.Model(&device).Where("id = ?", device.ID).Updates(device)
 	if result.RowsAffected == 0 {
 		return errors.New("device not updated")
@@ -87,17 +87,20 @@ func (d SQLiteRepository) Delete(deviceId int) error {
 	return nil
 }
 
-func (d SQLiteRepository) FindById(deviceId int) (domain.Device, error) {
+func (d SQLiteRepository) FindById(deviceId int) (*domain.Device, error) {
 	var device domain.Device
-	result := d.DB.Find(&device, deviceId)
-	if result != nil {
-		return device, nil
+	result := d.DB.First(&device, deviceId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, errors.New(common.ErrDeviceNotFound)
 	}
-	return domain.Device{}, errors.New("device not found")
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &device, nil
 }
 
-func (d SQLiteRepository) FindAll() ([]domain.Device, error) {
-	var Device []domain.Device
+func (d SQLiteRepository) FindAll() ([]*domain.Device, error) {
+	var Device []*domain.Device
 	result := d.DB.Find(&Device)
 	if result != nil {
 		log.Println(Device)
@@ -115,7 +118,7 @@ func NewDatabaseConnection(filepath string) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("connected")
+	fmt.Println("Connected With Success")
 	return db, nil
 }
 

@@ -36,7 +36,7 @@ func (m *MockUseCase) EXPECT() *MockUseCaseMockRecorder {
 }
 
 // AddDevice mocks base method.
-func (m *MockUseCase) AddDevice(ctx context.Context, device domain.Device) error {
+func (m *MockUseCase) AddDevice(ctx context.Context, device *domain.Device) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddDevice", ctx, device)
 	ret0, _ := ret[0].(error)
@@ -64,10 +64,10 @@ func (mr *MockUseCaseMockRecorder) DeleteDevice(ctx, id interface{}) *gomock.Cal
 }
 
 // GetDeviceByID mocks base method.
-func (m *MockUseCase) GetDeviceByID(ctx context.Context, ID int) (domain.Device, error) {
+func (m *MockUseCase) GetDeviceByID(ctx context.Context, ID int) (*domain.Device, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDeviceByID", ctx, ID)
-	ret0, _ := ret[0].(domain.Device)
+	ret0, _ := ret[0].(*domain.Device)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -93,10 +93,10 @@ func (mr *MockUseCaseMockRecorder) InitializeRepository() *gomock.Call {
 }
 
 // ListDevices mocks base method.
-func (m *MockUseCase) ListDevices(ctx context.Context) ([]domain.Device, error) {
+func (m *MockUseCase) ListDevices(ctx context.Context) ([]*domain.Device, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListDevices", ctx)
-	ret0, _ := ret[0].([]domain.Device)
+	ret0, _ := ret[0].([]*domain.Device)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -123,7 +123,7 @@ func (mr *MockUseCaseMockRecorder) SearchDevicesByBrand(ctx, brand interface{}) 
 }
 
 // UpdateDevice mocks base method.
-func (m *MockUseCase) UpdateDevice(ctx context.Context, id int, device domain.Device) error {
+func (m *MockUseCase) UpdateDevice(ctx context.Context, id int, device *domain.Device) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDevice", ctx, id, device)
 	ret0, _ := ret[0].(error)

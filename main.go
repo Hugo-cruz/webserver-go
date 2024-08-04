@@ -7,11 +7,11 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting")
+	fmt.Println("Starting Application")
 	dependencies, err := dep.BuildDependencies()
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("dependencies ok")
+	fmt.Println("Dependencies Created With Succes")
 	routes.Router(dependencies)
 }

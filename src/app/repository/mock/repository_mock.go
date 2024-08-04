@@ -65,10 +65,10 @@ func (mr *MockRepositoryMockRecorder) Delete(deviceId interface{}) *gomock.Call 
 }
 
 // FindAll mocks base method.
-func (m *MockRepository) FindAll() ([]domain.Device, error) {
+func (m *MockRepository) FindAll() ([]*domain.Device, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll")
-	ret0, _ := ret[0].([]domain.Device)
+	ret0, _ := ret[0].([]*domain.Device)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -95,10 +95,10 @@ func (mr *MockRepositoryMockRecorder) FindByBrand(brand interface{}) *gomock.Cal
 }
 
 // FindById mocks base method.
-func (m *MockRepository) FindById(deviceId int) (domain.Device, error) {
+func (m *MockRepository) FindById(deviceId int) (*domain.Device, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindById", deviceId)
-	ret0, _ := ret[0].(domain.Device)
+	ret0, _ := ret[0].(*domain.Device)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -124,7 +124,7 @@ func (mr *MockRepositoryMockRecorder) Initialize() *gomock.Call {
 }
 
 // Save mocks base method.
-func (m *MockRepository) Save(device domain.Device) error {
+func (m *MockRepository) Save(device *domain.Device) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Save", device)
 	ret0, _ := ret[0].(error)
@@ -138,7 +138,7 @@ func (mr *MockRepositoryMockRecorder) Save(device interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockRepository) Update(device domain.Device) error {
+func (m *MockRepository) Update(device *domain.Device) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", device)
 	ret0, _ := ret[0].(error)

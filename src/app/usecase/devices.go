@@ -26,7 +26,7 @@ func (d DeviceHandler) InitializeRepository() error {
 	return nil
 }
 
-func (d DeviceHandler) AddDevice(ctx context.Context, device domain.Device) error {
+func (d DeviceHandler) AddDevice(ctx context.Context, device *domain.Device) error {
 	creationDate := time.Now()
 	device.CreationTime = creationDate
 	err := d.dbRepository.Save(device)
@@ -36,23 +36,26 @@ func (d DeviceHandler) AddDevice(ctx context.Context, device domain.Device) erro
 	return nil
 }
 
-func (d DeviceHandler) GetDeviceByID(ctx context.Context, ID int) (domain.Device, error) {
+func (d DeviceHandler) GetDeviceByID(ctx context.Context, ID int) (*domain.Device, error) {
+	var deviceFound *domain.Device
 	deviceFound, err := d.dbRepository.FindById(ID)
 	if err != nil {
-		return domain.Device{}, err
+		return &domain.Device{}, err
 	}
 	return deviceFound, nil
 }
 
-func (d DeviceHandler) ListDevices(ctx context.Context) ([]domain.Device, error) {
-	devices, err := d.dbRepository.FindAll()
+func (d DeviceHandler) ListDevices(ctx context.Context) ([]*domain.Device, error) {
+	var devices []*domain.Device
+	var err error
+	devices, err = d.dbRepository.FindAll()
 	if err != nil {
-		return []domain.Device{}, err
+		return []*domain.Device{}, err
 	}
 	return devices, nil
 }
 
-func (d DeviceHandler) UpdateDevice(ctx context.Context, id int, device domain.Device) error {
+func (d DeviceHandler) UpdateDevice(ctx context.Context, id int, device *domain.Device) error {
 	err := d.dbRepository.Update(device)
 	if err != nil {
 		return err

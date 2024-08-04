@@ -10,10 +10,10 @@ import (
 type Repository interface {
 	Connect() (*gorm.DB, error)
 	Initialize() error
-	Save(device domain.Device) error
-	Update(device domain.Device) error
+	Save(device *domain.Device) error
+	Update(device *domain.Device) error
 	Delete(deviceId int) error
-	FindById(deviceId int) (domain.Device, error)
+	FindById(deviceId int) (*domain.Device, error)
 	FindByBrand(brand string) ([]domain.Device, error)
-	FindAll() ([]domain.Device, error)
+	FindAll() ([]*domain.Device, error)
 }

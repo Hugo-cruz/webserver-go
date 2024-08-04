@@ -3,11 +3,11 @@ package handler
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"strconv"
 	"webserver/src/app/domain"
 	"webserver/src/app/port/device"
+	common "webserver/src/commom"
 )
 
 type devicesHandler struct {
@@ -20,18 +20,14 @@ func NewDevicesHandler(deviceUseCase device.UseCase) *devicesHandler {
 	}
 }
 
-func HomeHandler(context *gin.Context) {
-	fmt.Println("aaaaa")
-}
-
 func (h *devicesHandler) InitializeDB(ctx *gin.Context) {
 	err := h.deviceUseCase.InitializeRepository()
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	if err == nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": "DB Initialized"})
-	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "DB Initialized"})
+
 }
 
 func (h *devicesHandler) GetDeviceByID(ctx *gin.Context) {
@@ -39,66 +35,67 @@ func (h *devicesHandler) GetDeviceByID(ctx *gin.Context) {
 	ID, err := strconv.Atoi(id)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	device, err := h.deviceUseCase.GetDeviceByID(ctx, ID)
+	deviceItem, err := h.deviceUseCase.GetDeviceByID(ctx, ID)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		if err.Error() == common.ErrDeviceNotFound {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		} else {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		return
 	}
-	if err == nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Device with ID %d", ID),
-			"data": device})
-	}
+	ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Device with ID %d", ID), "data": deviceItem})
 }
 
 func (h *devicesHandler) ListDevices(ctx *gin.Context) {
 	devices, err := h.deviceUseCase.ListDevices(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	if err == nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Devices %d", len(devices)),
-			"data": devices})
-	}
+	ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Devices %d", len(devices)), "data": devices})
 }
 
 func (h *devicesHandler) CreateDevice(ctx *gin.Context) {
-	device := domain.Device{}
-	err := ctx.ShouldBind(&device)
+	var deviceToCreate domain.CreateDevice
+	err := ctx.ShouldBind(&deviceToCreate)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	err = h.deviceUseCase.AddDevice(ctx, device)
+	parsedDevice := parseDevice(deviceToCreate)
+	err = h.deviceUseCase.AddDevice(ctx, &parsedDevice)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "Device created"})
 
-	if err == nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Device created"})
-	}
 }
 
 func (h *devicesHandler) UpdateDevice(ctx *gin.Context) {
 	id := ctx.Param("id")
 	ID, err := strconv.Atoi(id)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
 	}
-	device := domain.Device{}
-	err = ctx.ShouldBind(&device)
-	device.ID = ID
-	log.Println(device)
+	deviceToUpdate := domain.Device{}
+	err = ctx.ShouldBind(&deviceToUpdate)
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		return
+	}
+	deviceToUpdate.ID = ID
+	err = h.deviceUseCase.UpdateDevice(ctx, ID, &deviceToUpdate)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	err = h.deviceUseCase.UpdateDevice(ctx, ID, device)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	}
-	if err == nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Device updated"})
-	}
-
+	ctx.JSON(http.StatusOK, gin.H{"message": "Device updated"})
 }
 
 func (h *devicesHandler) DeleteDevice(ctx *gin.Context) {
@@ -106,14 +103,15 @@ func (h *devicesHandler) DeleteDevice(ctx *gin.Context) {
 	ID, err := strconv.Atoi(id)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 	err = h.deviceUseCase.DeleteDevice(ctx, ID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	if err == nil {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Device deleted"})
-	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "Device deleted"})
+
 }
 
 func (h *devicesHandler) SearchByBrand(ctx *gin.Context) {
@@ -121,8 +119,14 @@ func (h *devicesHandler) SearchByBrand(ctx *gin.Context) {
 	devices, err := h.deviceUseCase.SearchDevicesByBrand(ctx, brand)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Devices %d", len(devices)),
-		"data": devices,
-	})
+	ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Devices %d", len(devices)), "data": devices})
+}
+
+func parseDevice(deviceToCreate domain.CreateDevice) domain.Device {
+	return domain.Device{
+		Brand: deviceToCreate.Brand,
+		Name:  deviceToCreate.Name,
+	}
 }

@@ -38,12 +38,12 @@ func (suite *DeviceUseCaseTestSuite) TestGetDeviceByID() {
 	suite.Equal(mockDevice, deviceResult)
 }
 func (suite *DeviceUseCaseTestSuite) TestGetDeviceByIDNotFound() {
-	suite.repository.EXPECT().FindById(0).Return(domain.Device{}, errors.New("not found"))
+	suite.repository.EXPECT().FindById(0).Return(&domain.Device{}, errors.New("not found"))
 	_, err := suite.UseCase.GetDeviceByID(suite.Context, 0)
 	suite.NotNil(err)
 }
 func (suite *DeviceUseCaseTestSuite) TestGetDeviceByIDError() {
-	suite.repository.EXPECT().FindById(0).Return(domain.Device{}, errors.New("error"))
+	suite.repository.EXPECT().FindById(0).Return(&domain.Device{}, errors.New("error"))
 	_, err := suite.UseCase.GetDeviceByID(suite.Context, 0)
 	suite.NotNil(err)
 }
@@ -60,13 +60,13 @@ func (suite *DeviceUseCaseTestSuite) TestDeleteDeviceError() {
 }
 func (suite *DeviceUseCaseTestSuite) TestGetDeviceList() {
 	mockDevice := domain.NewMockDevice()
-	suite.repository.EXPECT().FindAll().Return([]domain.Device{mockDevice}, nil)
+	suite.repository.EXPECT().FindAll().Return([]*domain.Device{mockDevice}, nil)
 	devices, err := suite.UseCase.ListDevices(suite.Context)
 	suite.Nil(err)
 	suite.Equal(mockDevice, devices[0])
 }
 func (suite *DeviceUseCaseTestSuite) TestGetDeviceListError() {
-	suite.repository.EXPECT().FindAll().Return([]domain.Device{}, errors.New("error"))
+	suite.repository.EXPECT().FindAll().Return([]*domain.Device{}, errors.New("error"))
 	_, err := suite.UseCase.ListDevices(suite.Context)
 	suite.NotNil(err)
 }
