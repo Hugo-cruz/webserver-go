@@ -79,7 +79,7 @@ func (d SQLiteRepository) Update(device *domain.Device) error {
 }
 
 func (d SQLiteRepository) Delete(deviceId int) error {
-	var deviceModel domain.DeviceModel
+	var deviceModel domain.Device
 	result := d.DB.Find("id = ?", deviceId).Delete(&deviceModel)
 	if result == nil {
 		return errors.New("device not found")

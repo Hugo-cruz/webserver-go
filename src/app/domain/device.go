@@ -16,13 +16,6 @@ type Device struct {
 	CreationTime time.Time `gorm:"not null"`
 }
 
-type DeviceModel struct {
-	ID           int       `gorm:"primaryKey;autoIncrement"`
-	Name         string    `gorm:"size:255;not null"`
-	Brand        string    `gorm:"size:255;not null"`
-	CreationTime time.Time `gorm:"not null"`
-}
-
 func NewMockDevice() *Device {
 	return &Device{
 		ID:    1,
